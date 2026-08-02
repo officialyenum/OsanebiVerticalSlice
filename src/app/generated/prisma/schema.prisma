@@ -1,0 +1,233 @@
+// Osanebi — full domain model.
+// This slice's UI/API only touches User, Studio, Game, Session, Feedback,
+// and Report — everything else (Event, Task, PublisherInsight) is modeled
+// now so the schema doesn't need to change shape later.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  studio
+  playtester
+  publisher
+  admin
+}
+
+enum SessionStatus {
+  scheduled
+  live
+  completed
+}
+
+enum EventType {
+  gameplay
+  bug
+  reaction
+  system
+}
+
+enum FeedbackCategory {
+  bug
+  ux
+  balance
+  narrative
+  performance
+}
+
+enum FeedbackSeverity {
+  low
+  medium
+  high
+  critical
+}
+
+enum ReportType {
+  qa_summary
+  pitch_report
+  publisher_brief
+}
+
+enum TaskPriority {
+  P0
+  P1
+  P2
+}
+
+enum TaskStatus {
+  open
+  in_progress
+  done
+}
+
+enum TaskSource {
+  feedback
+  ai_report
+  manual
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole
+  bio          String?
+  skills       String[] @default([])
+  studioName   String?
+  createdAt    DateTime @default(now())
+
+  ownedStudios     Studio[]            @relation("StudioOwner")
+  studioMembership StudioMember[]
+  sessionsAsTester SessionPlaytester[]
+  feedbackAuthored Feedback[]
+
+  @@map("users")
+}
+
+model Studio {
+  id          String   @id @default(cuid())
+  ownerUserId String
+  owner       User     @relation("StudioOwner", fields: [ownerUserId], references: [id])
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  members StudioMember[]
+  games   Game[]
+
+  @@map("studios")
+}
+
+// Explicit join table so studio team membership can carry its own fields later.
+model StudioMember {
+  id       String @id @default(cuid())
+  studioId String
+  studio   Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  @@unique([studioId, userId])
+  @@map("studio_members")
+}
+
+model Game {
+  id           String   @id @default(cuid())
+  studioId     String
+  studio       Studio   @relation(fields: [studioId], references: [id], onDelete: Cascade)
+  title        String
+  genre        String?
+  platform     String?
+  buildVersion String?
+  buildBranch  String?
+  pitchSummary String?
+  createdAt    DateTime @default(now())
+
+  sessions          Session[]
+  tasks             Task[]
+  publisherInsights PublisherInsight[]
+
+  @@map("games")
+}
+
+model Session {
+  id        String        @id @default(cuid())
+  gameId    String
+  game      Game          @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  status    SessionStatus @default(scheduled)
+  startTime DateTime?
+  endTime   DateTime?
+  notes     String?
+  createdAt DateTime      @default(now())
+
+  playtesters SessionPlaytester[]
+  events      Event[]
+  feedback    Feedback[]
+  reports     Report[]
+  tasks       Task[]
+
+  @@map("sessions")
+}
+
+model SessionPlaytester {
+  id        String  @id @default(cuid())
+  sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([sessionId, userId])
+  @@map("session_playtesters")
+}
+
+model Event {
+  id        String    @id @default(cuid())
+  sessionId String
+  session   Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type      EventType
+  timestamp DateTime  @default(now())
+  payload   Json
+
+  @@index([sessionId, timestamp])
+  @@map("events")
+}
+
+model Feedback {
+  id           String           @id @default(cuid())
+  sessionId    String
+  session      Session          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  authorUserId String
+  author       User             @relation(fields: [authorUserId], references: [id])
+  category     FeedbackCategory
+  severity     FeedbackSeverity
+  content      String
+  tags         String[]         @default([])
+  createdAt    DateTime         @default(now())
+
+  @@index([sessionId, createdAt])
+  @@map("feedback")
+}
+
+model Report {
+  id        String     @id @default(cuid())
+  sessionId String
+  session   Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type      ReportType
+  content   String
+  createdAt DateTime   @default(now())
+
+  @@map("reports")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  gameId      String?
+  game        Game?        @relation(fields: [gameId], references: [id])
+  sessionId   String?
+  session     Session?     @relation(fields: [sessionId], references: [id])
+  title       String
+  description String?
+  priority    TaskPriority
+  status      TaskStatus   @default(open)
+  source      TaskSource
+  createdAt   DateTime     @default(now())
+
+  @@map("tasks")
+}
+
+model PublisherInsight {
+  id                   String   @id @default(cuid())
+  gameId               String
+  game                 Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  score                Int
+  rationale            String
+  recommendedNextSteps String
+  createdAt            DateTime @default(now())
+
+  @@map("publisher_insights")
+}
