@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import type { User } from "@prisma/client";
+import type { User } from "../app/generated/prisma/client";
 
 /**
  * Loads a session and confirms the given user may view it: either they

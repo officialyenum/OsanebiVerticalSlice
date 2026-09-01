@@ -25,7 +25,7 @@ osanebi/
     │   ├── access.ts        "Can this user see this session?" check
     │   ├── llm.ts            Llama 3 client (OpenAI-compatible endpoint)
     │   └── prisma.ts
-    └── middleware.ts         Redirects logged-out visitors away from /dashboard
+    └── proxy.ts         Redirects logged-out visitors away from /dashboard
 ```
 
 ## What's built vs. what's modeled

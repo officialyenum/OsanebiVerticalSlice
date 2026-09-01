@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
-import type { UserRole } from "@prisma/client";
+import type { UserRole } from "../app/generated/prisma/client";
 import { SESSION_COOKIE } from "./constants";
 import dotenv from "dotenv";
 dotenv.config();
