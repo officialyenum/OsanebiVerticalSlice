@@ -5,7 +5,8 @@ import { IAuthService } from '@api/services/interfaces/IAuth.Service';
 import { authMiddleware } from '@api/middleware/auth';
 import { createApiRouter } from '@api/utils/api';
 import { CreateSessionDocRoute, GetSessionsDocRoute } from '@api/doc/Session.doc';
-import { GetFeedbacksBySessionDocRoute } from '@api/doc/Feedback.doc';
+import { CreateFeedbackDocRoute, GetFeedbacksBySessionDocRoute } from '@api/doc/Feedback.doc';
+import { CreateEventDocRoute, GetEventsBySessionDocRoute } from '@api/doc/Event.doc';
 
 export function createSessionRoutes(
     controller: SessionController,
@@ -18,7 +19,13 @@ export function createSessionRoutes(
     router.openapi(GetSessionsDocRoute, (c) => controller.listSessions(c));
     router.openapi(CreateSessionDocRoute, (c) => controller.createSession(c));
 
-    // feedbacks routes
+    router.use('/feedbacks', authMiddleware(authService));
+    // feedback routes
     router.openapi(GetFeedbacksBySessionDocRoute, (c) => controller.listFeedbackBySession(c));
+    router.openapi(CreateFeedbackDocRoute, (c) => controller.submitFeedback(c));
+
+    // events routes
+    router.openapi(GetEventsBySessionDocRoute, (c) => controller.listEventsBySession(c));
+    router.openapi(CreateEventDocRoute, (c) => controller.submitEvent(c));
     return router;
 }

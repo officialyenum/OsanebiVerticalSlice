@@ -1,4 +1,4 @@
-import { Game } from '@api/entities/Game.Entity';
+import { GameEntity } from '@api/entities/Game.Entity';
 import { PrismaClient } from '@api/generated/prisma/client';
 import { GameDto } from '@api/types/dto.type';
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from '@api/utils/errors';
@@ -7,7 +7,7 @@ import { IGameRepository } from '../interfaces/IGame.Repository';
 export class PrismaGameRepository implements IGameRepository {
     constructor(private prisma: PrismaClient) { }
 
-    async findById(gameId: string): Promise<Game> {
+    async findById(gameId: string): Promise<GameEntity> {
         const game = await this.prisma.game.findFirst({
             where: { id: gameId },
         });
@@ -17,7 +17,7 @@ export class PrismaGameRepository implements IGameRepository {
         return this.toDomain(game);
     };
 
-    async findAll(filters: GameDto.ListFilters = {}): Promise<Game[]> {
+    async findAll(filters: GameDto.ListFilters = {}): Promise<GameEntity[]> {
         const createdAt = filters.date ? this.dateFilter(filters.date) : undefined;
         const games = await this.prisma.game.findMany({
             where: {
@@ -45,7 +45,7 @@ export class PrismaGameRepository implements IGameRepository {
         userId: string,
         data: GameDto.Create,
         gameId: string,
-    ): Promise<Game> {
+    ): Promise<GameEntity> {
         const studio = await this.prisma.studio.findFirst({
             where: { id: data.studioId, ownerUserId: userId },
         });
@@ -73,7 +73,7 @@ export class PrismaGameRepository implements IGameRepository {
         userId: string,
         gameId: string,
         data: GameDto.Update,
-    ): Promise<Game> {
+    ): Promise<GameEntity> {
         const ownedGame = await this.prisma.game.findFirst({
             where: { id: gameId, studio: { ownerUserId: userId } },
         });
@@ -118,8 +118,8 @@ export class PrismaGameRepository implements IGameRepository {
         await this.prisma.game.delete({ where: { id: gameId } });
     }
 
-    private toDomain(raw: any): Game {
-        return new Game(
+    private toDomain(raw: any): GameEntity {
+        return new GameEntity(
             raw.id,
             raw.studioId,
             raw.title,

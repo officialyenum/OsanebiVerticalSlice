@@ -1,32 +1,61 @@
+import { FeedbackCategory, FeedbackSeverity } from '@api/generated/prisma/enums';
 import { z } from '@hono/zod-openapi';
 
 export const FeedbackSchema = z.object({
     id: z.string(),
     sessionId: z.string(),
     authorUserId: z.string(),
-    category: z.enum(['low', 'medium', 'high', 'critical']),
-    severity: z.enum(['bug', 'ux', 'balance', 'narrative', 'performance']),
+    category: z.enum([
+        FeedbackCategory.balance,
+        FeedbackCategory.bug,
+        FeedbackCategory.narrative,
+        FeedbackCategory.performance,
+        FeedbackCategory.ux]),
+    severity: z.enum([
+        FeedbackSeverity.low,
+        FeedbackSeverity.medium,
+        FeedbackSeverity.high,
+        FeedbackSeverity.critical
+    ]),
     content: z.string().nullable(),
     tags: z.array(z.string()),
     createdAt: z.string(),
 });
 
 export const CreateFeedbackSchema = z.object({
-    sessionId: z.string(),
-    authorUserId: z.string(),
-    category: z.enum(['low', 'medium', 'high', 'critical']),
-    severity: z.enum(['bug', 'ux', 'balance', 'narrative', 'performance']),
-    content: z.string().nullable(),
-    tags: z.array(z.string()),
+    sessionId: z.string().min(1, "Session Id Required"),
+    category: z.enum([
+        FeedbackCategory.balance,
+        FeedbackCategory.bug,
+        FeedbackCategory.narrative,
+        FeedbackCategory.performance,
+        FeedbackCategory.ux], "Category Required"),
+    severity: z.enum([
+        FeedbackSeverity.low,
+        FeedbackSeverity.medium,
+        FeedbackSeverity.high,
+        FeedbackSeverity.critical
+    ], "Severity Required"),
+    content: z.string().nullable().optional(),
+    tags: z.array(z.string()).optional(),
 });
 
 export const UpdateFeedbackSchema = z.object({
-    sessionId: z.string(),
-    authorUserId: z.string(),
-    category: z.enum(['low', 'medium', 'high', 'critical']),
-    severity: z.enum(['bug', 'ux', 'balance', 'narrative', 'performance']),
-    content: z.string().nullable(),
-    tags: z.array(z.string()),
+    sessionId: z.string().min(1, "Session Id Required"),
+    category: z.enum([
+        FeedbackCategory.balance,
+        FeedbackCategory.bug,
+        FeedbackCategory.narrative,
+        FeedbackCategory.performance,
+        FeedbackCategory.ux]).optional(),
+    severity: z.enum([
+        FeedbackSeverity.low,
+        FeedbackSeverity.medium,
+        FeedbackSeverity.high,
+        FeedbackSeverity.critical
+    ]).optional(),
+    content: z.string().nullable().optional(),
+    tags: z.array(z.string()).optional(),
 });
 
 export const FeedbackListResponseSchema = z.object({

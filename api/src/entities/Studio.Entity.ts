@@ -1,6 +1,6 @@
 import type { Studio as StudioModel } from '@api/generated/prisma/browser';
 
-export class Studio implements StudioModel {
+export class StudioEntity implements StudioModel {
     id: string;
     ownerUserId: string;
     name: string;

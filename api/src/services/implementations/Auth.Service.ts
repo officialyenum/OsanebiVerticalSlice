@@ -3,7 +3,7 @@ import { IUserRepository } from '@api/repositories/interfaces/IUser.Respository'
 import { AuthDTO, UserDTO } from '@api/types/dto.type';
 import { ConflictError, UnauthorizedError, ValidationError } from '@api/utils/errors';
 import { hashPassword, validateEmail } from '@api/utils/security';
-import { User } from '@api/entities/User.Entity';
+import { UserEntity } from '@api/entities/User.Entity';
 import { JwtSign, JwtVerify } from '@api/middleware/auth';
 
 const TOKEN_TTL_SECONDS = 15 * 60;
@@ -58,9 +58,9 @@ export class AuthService implements IAuthService {
             throw new ValidationError('Password must be at most 72 bytes');
         }
         const hashedPassword = await hashPassword(data.password);
-        let user: User;
+        let user: UserEntity;
         try {
-            user = await this.userRepository.create(new User(
+            user = await this.userRepository.create(new UserEntity(
                 `usr_${crypto.randomUUID()}`,
                 email,
                 hashedPassword,

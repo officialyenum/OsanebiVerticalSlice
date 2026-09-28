@@ -67,8 +67,11 @@ export class UserController {
 
         const body = await c.req.json();
         const data: UserDTO.Update = {
+            id: userId,
             email: body.email,
             name: body.name,
+            bio: body.skills,
+            skills: body.skills
         };
 
         const user = await this.userService.updateUser(id, data);

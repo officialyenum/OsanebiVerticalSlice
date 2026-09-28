@@ -1,4 +1,4 @@
-import { Game } from '@api/entities/Game.Entity';
+import { GameEntity } from '@api/entities/Game.Entity';
 import { IGameRepository } from '@api/repositories/interfaces/IGame.Repository';
 import { IGameService } from '@api/services/interfaces/IGame.Service';
 import { GameDto } from '@api/types/dto.type';
@@ -59,7 +59,7 @@ export class GameService implements IGameService {
         await this.invalidateCache();
     }
 
-    private toResponse(game: Game): GameDto.Response {
+    private toResponse(game: GameEntity): GameDto.Response {
         return {
             id: game.id,
             title: game.title,

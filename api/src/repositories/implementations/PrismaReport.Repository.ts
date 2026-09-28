@@ -1,4 +1,4 @@
-import { Report } from '@api/entities/Report.Entity';
+import { ReportEntity } from '@api/entities/Report.Entity';
 import { PrismaClient, ReportType, UserRole } from '@api/generated/prisma/client';
 import { ReportDto } from '@api/types/dto.type';
 import { ForbiddenError, NotFoundError } from '@api/utils/errors';
@@ -7,7 +7,7 @@ import { IReportRepository } from '../interfaces/IReport.Repository';
 export class PrismaReportRepository implements IReportRepository {
     constructor(private prisma: PrismaClient) { }
 
-    async findVisibleToUser(userId: string, filters: ReportDto.ListFilters = {}): Promise<Report[]> {
+    async findVisibleToUser(userId: string, filters: ReportDto.ListFilters = {}): Promise<ReportEntity[]> {
         const visibility = await this.visibilityForUser(userId);
         const reports = await this.prisma.report.findMany({
             where: {
@@ -20,7 +20,7 @@ export class PrismaReportRepository implements IReportRepository {
         return reports.map((report) => this.toDomain(report));
     }
 
-    async findByIdVisibleToUser(userId: string, reportId: string): Promise<Report> {
+    async findByIdVisibleToUser(userId: string, reportId: string): Promise<ReportEntity> {
         const visibility = await this.visibilityForUser(userId);
         const report = await this.prisma.report.findFirst({
             where: { id: reportId, ...visibility },
@@ -29,7 +29,7 @@ export class PrismaReportRepository implements IReportRepository {
         return this.toDomain(report);
     }
 
-    async createForOwner(userId: string, data: ReportDto.Create, reportId: string): Promise<Report> {
+    async createForOwner(userId: string, data: ReportDto.Create, reportId: string): Promise<ReportEntity> {
         await this.assertOwnedSession(userId, data.sessionId);
         const report = await this.prisma.report.create({
             data: {
@@ -42,7 +42,7 @@ export class PrismaReportRepository implements IReportRepository {
         return this.toDomain(report);
     }
 
-    async updateForOwner(userId: string, reportId: string, data: ReportDto.Update): Promise<Report> {
+    async updateForOwner(userId: string, reportId: string, data: ReportDto.Update): Promise<ReportEntity> {
         const report = await this.prisma.report.findFirst({
             where: { id: reportId, session: { game: { studio: { ownerUserId: userId } } } },
         });
@@ -89,7 +89,7 @@ export class PrismaReportRepository implements IReportRepository {
         if (!session) throw new ForbiddenError('You can only manage reports for sessions tied to games you own');
     }
 
-    private toDomain(raw: any): Report {
-        return new Report(raw.id, raw.sessionId, raw.type, raw.content, raw.createdAt);
+    private toDomain(raw: any): ReportEntity {
+        return new ReportEntity(raw.id, raw.sessionId, raw.type, raw.content, raw.createdAt);
     }
 }

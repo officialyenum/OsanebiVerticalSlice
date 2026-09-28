@@ -13,8 +13,7 @@ export const GameSchema = z.object({
 });
 
 export const CreateGameSchema = z.object({
-    studioId: z.string().min(1),
-    title: z.string().min(1),
+    title: z.string().min(1, "Game Title is Required"),
     genre: z.string().optional(),
     platform: z.string().optional(),
     buildVersion: z.string().optional(),
@@ -23,6 +22,7 @@ export const CreateGameSchema = z.object({
 });
 
 export const UpdateGameSchema = z.object({
+    id: z.string().min(1, "Game Id is Required"),
     title: z.string().min(1).optional(),
     genre: z.string().nullable().optional(),
     platform: z.string().nullable().optional(),

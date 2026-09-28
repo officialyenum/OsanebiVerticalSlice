@@ -1,23 +1,25 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import { CreateSessionSchema, SessionResponseSchema, SessionsResponseSchema } from '@api/dto/session.dto';
 import { ErrorSchema } from '@api/dto/error.dto';
 import { CreateFeedbackSchema, FeedbackListResponseSchema, FeedbackResponseSchema } from '@api/dto/feedback.dto';
+import { CreateEventSchema, EventListResponseSchema, EventResponseSchema } from '@api/dto/event.dto';
 
 const authSecurity = [{ bearerAuth: [] }];
 
-export const GetFeedbacksBySessionDocRoute = createRoute({
+export const GetEventsBySessionDocRoute = createRoute({
     method: 'get',
-    path: 'sessions/{sessionId}/feedbacks',
-    tags: ['Feedbacks'],
-    summary: 'List feedbacks for a session',
-    description: 'Lists feedbacks the authenticated user can view for a session.',
+    path: 'sessions/{sessionId}/events',
+    tags: ['Events'],
+    summary: 'List events for a session',
+    description: 'Lists Events owned by the current studio for the session.',
     security: authSecurity,
     request: {
         params: z.object({ sessionId: z.string().min(1) }),
     },
     responses: {
         200: {
-            description: 'Feedbacks found',
-            content: { 'application/json': { schema: FeedbackListResponseSchema } },
+            description: 'Events found',
+            content: { 'application/json': { schema: EventListResponseSchema } },
         },
         401: {
             description: 'Authentication required',
@@ -26,16 +28,16 @@ export const GetFeedbacksBySessionDocRoute = createRoute({
     },
 });
 
-export const GetFeedbacksDocRoute = createRoute({
+export const GetEventsDocRoute = createRoute({
     method: 'get',
-    path: '/feedbacks',
-    tags: ['Feedbacks'],
-    summary: 'List visible Feedbacks',
-    description: 'Lists Feedbacks owned by the current user.',
+    path: '/events',
+    tags: ['Events'],
+    summary: 'List visible Events',
+    description: 'Lists Events owned by the current studio.',
     security: authSecurity,
     responses: {
         200: {
-            description: 'Feedbacks found',
+            description: 'Events found',
             content: { 'application/json': { schema: FeedbackListResponseSchema } },
         },
         401: {
@@ -45,23 +47,22 @@ export const GetFeedbacksDocRoute = createRoute({
     },
 });
 
-export const CreateFeedbackDocRoute = createRoute({
+export const CreateEventDocRoute = createRoute({
     method: 'post',
-    path: '/feedbacks',
-    tags: ['Feedbacks'],
-    summary: 'Create a Feedback',
-    description: 'Creates a Feedback for a session.',
-    security: authSecurity,
+    path: '/events',
+    tags: ['Events'],
+    summary: 'Create an Event',
+    description: 'Creates an Event for a session.',
     request: {
         body: {
             required: true,
-            content: { 'application/json': { schema: CreateFeedbackSchema } },
+            content: { 'application/json': { schema: CreateEventSchema } },
         },
     },
     responses: {
         201: {
-            description: 'Feedback created',
-            content: { 'application/json': { schema: FeedbackResponseSchema } },
+            description: 'Event created',
+            content: { 'application/json': { schema: EventResponseSchema } },
         },
         400: {
             description: 'Invalid request',

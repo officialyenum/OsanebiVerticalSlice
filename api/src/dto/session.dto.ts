@@ -1,9 +1,10 @@
+import { SessionStatus } from '@api/generated/prisma/enums';
 import { z } from '@hono/zod-openapi';
 
 export const SessionSchema = z.object({
     id: z.string(),
     gameId: z.string(),
-    status: z.enum(['scheduled', 'live', 'completed']),
+    status: z.enum([SessionStatus.scheduled, SessionStatus.live, SessionStatus.completed]),
     startTime: z.string().nullable(),
     endTime: z.string().nullable(),
     notes: z.string().nullable(),
@@ -13,8 +14,9 @@ export const SessionSchema = z.object({
 
 export const CreateSessionSchema = z.object({
     gameId: z.string().min(1),
-    startTime: z.string().datetime().optional(),
-    endTime: z.string().datetime().optional(),
+    startTime: z.date().optional(),
+    endTime: z.date({
+    }).optional(),
     notes: z.string().optional(),
     playtesterEmails: z.array(z.email()).optional(),
 });

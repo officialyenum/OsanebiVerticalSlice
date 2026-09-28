@@ -1,6 +1,6 @@
 import { NotFoundError, ConflictError } from '@api/utils/errors';
 import { IUserRepository } from '../interfaces/IUser.Respository';
-import { User } from '@api/entities/User.Entity';
+import { UserEntity } from '@api/entities/User.Entity';
 import { Prisma, PrismaClient } from "@api/generated/prisma/client";
 import type { User as UserModel } from '@api/generated/prisma/browser';
 import bcrypt from 'bcryptjs';
@@ -12,7 +12,7 @@ export class PrismaUserRepository implements IUserRepository {
         this.prisma = prismaDb;
     }
 
-    async create(user: User): Promise<User> {
+    async create(user: UserModel): Promise<UserEntity> {
         try {
             const created = await this.prisma.user.create({
                 data: {
@@ -39,12 +39,12 @@ export class PrismaUserRepository implements IUserRepository {
         }
     }
 
-    async findById(id: string): Promise<User | null> {
+    async findById(id: string): Promise<UserEntity | null> {
         const user = await this.prisma.user.findUnique({ where: { id } });
         return user ? this.toDomain(user) : null;
     }
 
-    async findByEmail(email: string): Promise<User | null> {
+    async findByEmail(email: string): Promise<UserEntity | null> {
         const user = await this.prisma.user.findUnique({ where: { email } });
         console.log("user find by email repository")
         console.log(user)
@@ -58,12 +58,12 @@ export class PrismaUserRepository implements IUserRepository {
         });
     }
 
-    async findAll(): Promise<User[]> {
+    async findAll(): Promise<UserEntity[]> {
         const users = await this.prisma.user.findMany();
         return users.map((u) => this.toDomain(u));
     }
 
-    async update(id: string, data: Partial<User>): Promise<User> {
+    async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
         try {
             const updated = await this.prisma.user.update({
                 where: { id },
@@ -295,8 +295,8 @@ export class PrismaUserRepository implements IUserRepository {
     /**
    * Private helper: Transform Prisma model to domain entity
    */
-    private toDomain(raw: UserModel): User {
-        return new User(
+    private toDomain(raw: any): UserEntity {
+        return new UserEntity(
             raw.id,
             raw.email,
             raw.passwordHash,

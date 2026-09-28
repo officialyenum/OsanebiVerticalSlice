@@ -14,7 +14,7 @@ export const isAllowedRequestOrigin = (origin: string, requestUrl: string): bool
 
 
 export const validateEmail = (email: string) => {
-    return z.string().email().parse(email);
+    return z.email().parse(email);
 }
 
 export const hashPassword = async (password: string) => {

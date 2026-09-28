@@ -1,7 +1,7 @@
 import { FeedbackCategory, FeedbackSeverity } from '@api/generated/prisma/enums';
 import type { Feedback as FeedbackModel } from '@api/generated/prisma/browser';
 
-export class Feedback implements FeedbackModel {
+export class FeedbackEntity implements FeedbackModel {
     id: string;
     sessionId: string;
     authorUserId: string;

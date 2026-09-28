@@ -1,6 +1,7 @@
+import { ReportType } from '@api/generated/prisma/enums';
 import { z } from '@hono/zod-openapi';
 
-export const ReportTypeSchema = z.enum(['qa_summary', 'pitch_report', 'publisher_brief']);
+export const ReportTypeSchema = z.enum([ReportType.pitch_report, ReportType.publisher_brief, ReportType.qa_summary]);
 export const ReportSchema = z.object({
     id: z.string(),
     sessionId: z.string(),
@@ -9,7 +10,7 @@ export const ReportSchema = z.object({
     createdAt: z.string(),
 });
 export const CreateReportSchema = z.object({
-    sessionId: z.string().min(1),
+    sessionId: z.string().min(1, "Session Id is Required"),
     type: ReportTypeSchema,
     content: z.string().min(1),
 });

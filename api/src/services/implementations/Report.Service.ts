@@ -1,4 +1,4 @@
-import { Report } from '@api/entities/Report.Entity';
+import { ReportEntity } from '@api/entities/Report.Entity';
 import { IReportRepository } from '@api/repositories/interfaces/IReport.Repository';
 import { IReportService } from '@api/services/interfaces/IReport.Service';
 import { ReportDto } from '@api/types/dto.type';
@@ -58,7 +58,7 @@ export class ReportService implements IReportService {
         await this.invalidateCache();
     }
 
-    private toResponse(report: Report): ReportDto.Response {
+    private toResponse(report: ReportEntity): ReportDto.Response {
         return {
             id: report.id,
             sessionId: report.sessionId,

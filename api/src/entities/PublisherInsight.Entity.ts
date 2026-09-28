@@ -1,6 +1,6 @@
 import type { PublisherInsight as PublisherInsightModel } from '@api/generated/prisma/browser';
 
-export class PublisherInsight implements PublisherInsightModel {
+export class PublisherInsightEntity implements PublisherInsightModel {
     id: string;
     gameId: string;
     score: number;

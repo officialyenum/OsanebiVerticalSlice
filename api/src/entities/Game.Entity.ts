@@ -1,7 +1,7 @@
 import { GameDto } from "@api/types/dto.type";
 import type { Game as GameModel } from '@api/generated/prisma/browser';
 
-export class Game implements GameModel {
+export class GameEntity implements GameModel {
     id: string;
     studioId: string;
     title: string;

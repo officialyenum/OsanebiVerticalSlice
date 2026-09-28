@@ -1,4 +1,3 @@
-import { User } from '@api/entities/User.Entity';
 import { UserDTO } from '@api/types/dto.type';
 
 /**

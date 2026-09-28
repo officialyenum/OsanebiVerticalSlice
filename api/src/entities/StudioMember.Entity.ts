@@ -1,6 +1,6 @@
 import type { StudioMember as StudioMemberModel } from '@api/generated/prisma/browser';
 
-export class StudioMember implements StudioMemberModel {
+export class StudioMemberEntity implements StudioMemberModel {
     id: string;
     studioId: string;
     userId: string;

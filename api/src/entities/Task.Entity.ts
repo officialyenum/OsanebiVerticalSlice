@@ -1,7 +1,7 @@
 import { TaskPriority, TaskSource, TaskStatus } from '@api/generated/prisma/enums';
 import type { Task as TaskModel } from '@api/generated/prisma/browser';
 
-export class Task implements TaskModel {
+export class TaskEntity implements TaskModel {
     id: string;
     gameId: string | null;
     sessionId: string | null;

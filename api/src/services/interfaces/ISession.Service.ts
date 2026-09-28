@@ -1,4 +1,4 @@
-import { FeedbackDto, SessionDto } from '@api/types/dto.type';
+import { EventDto, FeedbackDto, SessionDto } from '@api/types/dto.type';
 
 export interface ISessionService {
     getVisibleSessions(authorUserId: string): Promise<SessionDto.Response[]>;
@@ -12,4 +12,10 @@ export interface ISessionService {
     findFeedbackById(feedbackId: string): Promise<FeedbackDto.Response>;
     createFeedback(data: FeedbackDto.Create): Promise<FeedbackDto.Response>;
     updateFeedback(data: FeedbackDto.Update): Promise<FeedbackDto.Response>;
+
+
+    getEventsBySessionId(sessionId: string): Promise<EventDto.Response[]>;
+    findEventById(eventId: string): Promise<EventDto.Response>;
+    createEvent(data: EventDto.Create): Promise<EventDto.Response>;
+    updateEvent(data: EventDto.Update): Promise<EventDto.Response>;
 }

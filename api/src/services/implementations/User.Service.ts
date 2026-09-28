@@ -1,6 +1,6 @@
 import { IUserRepository } from '@api/repositories/interfaces/IUser.Respository';
 import { IUserService } from '@api/services/interfaces/IUser.Service';
-import { User } from '@api/entities/User.Entity';
+import { UserEntity } from '@api/entities/User.Entity';
 import { UserDTO } from '@api/types/dto.type';
 import { ValidationError } from '@api/utils/errors';
 import { validateEmail, hashPassword } from '@api/utils/security';
@@ -55,7 +55,7 @@ export class UserService implements IUserService {
         const hashedPassword = await hashPassword(data.password);
 
         // Business rule: Create entity
-        const user = new User(
+        const user = new UserEntity(
             this.generateId(),
             data.email,
             hashedPassword,

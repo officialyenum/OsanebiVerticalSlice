@@ -1,6 +1,6 @@
 import type { SessionPlaytester as SessionPlaytesterModel } from '@api/generated/prisma/browser';
 
-export class SessionPlaytester implements SessionPlaytesterModel {
+export class SessionPlaytesterEntity implements SessionPlaytesterModel {
     id: string;
     sessionId: string;
     userId: string;

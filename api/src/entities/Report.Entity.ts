@@ -2,7 +2,7 @@ import { ReportType } from '@api/generated/prisma/enums';
 import { ReportDto } from '@api/types/dto.type';
 import type { Report as ReportModel } from '@api/generated/prisma/browser';
 
-export class Report implements ReportModel {
+export class ReportEntity implements ReportModel {
     id: string;
     sessionId: string;
     type: ReportType;

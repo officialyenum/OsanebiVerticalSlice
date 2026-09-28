@@ -2,7 +2,7 @@ import { SessionStatus } from '@api/generated/prisma/enums';
 import { SessionDto } from '@api/types/dto.type';
 import type { Session as SessionModel } from '@api/generated/prisma/browser';
 
-export class Session implements SessionModel {
+export class SessionEntity implements SessionModel {
     id: string;
     gameId: string;
     status: SessionStatus;

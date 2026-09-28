@@ -1,18 +1,28 @@
 // Data Transfer Objects - Define what data flows between layers
 
-import { FeedbackCategory, FeedbackSeverity } from "@api/generated/prisma/enums";
-import { FeedbackModel } from "@api/generated/prisma/models";
+import { EventType, FeedbackCategory, FeedbackSeverity, UserRole } from "@api/generated/prisma/enums";
+import { EventModel, FeedbackModel, UserModel } from "@api/generated/prisma/models";
 
 export namespace UserDTO {
     export interface Create {
         email: string;
         password: string;
-        name?: string;
+        name: string;
+        role?: UserRole;
+        bio?: string | null;
+        skills?: UserModel['skills'];
+        studioName?: string | null;
     }
 
     export interface Update {
-        name?: string;
+        id: string;
         email?: string;
+        password?: string;
+        name?: string;
+        role?: UserRole;
+        bio?: string | null;
+        skills?: UserModel['skills'];
+        studioName?: string | null;
     }
 
     export interface Response {
@@ -128,6 +138,37 @@ export namespace FeedbackDto {
         content: string;
         tags: FeedbackModel['tags'];
         createdAt: Date;
+    }
+}
+
+export namespace EventDto {
+    export interface ListFilters {
+        sessionId?: string;
+        type?: EventType;
+        timestamp?: Date;
+    }
+
+    export interface Create {
+        sessionId: string;
+        type: EventType;
+        timestamp: Date;
+        payload: EventModel['payload'];
+    }
+
+    export interface Update {
+        id: string;
+        sessionId: string;
+        type: EventType;
+        timestamp: Date;
+        payload: EventModel['payload'];
+    }
+
+    export interface Response {
+        id: string;
+        sessionId?: string;
+        type?: EventType;
+        timestamp?: Date;
+        payload?: EventModel['payload'];
     }
 }
 

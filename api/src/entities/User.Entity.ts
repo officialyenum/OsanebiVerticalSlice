@@ -8,7 +8,7 @@ import type { User as UserModel } from '@api/generated/prisma/browser';
  * 
  * Single Responsibility: Encapsulate User business rules
  */
-export class User implements UserModel {
+export class UserEntity implements UserModel {
     id: string;
     email: string;
     passwordHash: string;

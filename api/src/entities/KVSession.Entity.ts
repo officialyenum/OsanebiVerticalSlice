@@ -1,5 +1,5 @@
 
-export class KVSession {
+export class KVSessionEntity {
     id: string;
     userId: string;
     expiresAt: Date;
