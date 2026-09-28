@@ -3,18 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginAction } from "@/lib/actions/auth";
-import type { LoginRequest } from "@/lib/type/requests";
-import { FeedbackCategory } from "@/generated/prisma/enums";
 import FormSubmissionButton from "@/components/ui/Button";
-
-
-const CATEGORIES = [
-    FeedbackCategory.bug,
-    FeedbackCategory.ux,
-    FeedbackCategory.balance,
-    FeedbackCategory.narrative,
-    FeedbackCategory.performance
-] as const;
 
 
 export default function LoginPage() {
