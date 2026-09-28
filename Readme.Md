@@ -1,6 +1,6 @@
 # Osanebi
 
-Osanebi is a real-time QA and playtesting platform for game studios. This repository contains a vertical slice of the product: a studio manages a game and playtest session, playtesters submit feedback, and the studio reviews the results and generates QA reports.
+Osanebi is a real-time QA and playtesting platform for game studios. This repository contains a vertical slice of the product: a studio manages a game and playtest session, playtesters submit feedback or events from the Game Engine of Choice by calling the Appropriate Api, and the studio reviews the results and generates QA reports.
 
 ## What is in this repository?
 
