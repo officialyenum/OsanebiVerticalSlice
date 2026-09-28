@@ -10,6 +10,9 @@ export const SessionSchema = z.object({
     notes: z.string().nullable(),
     playtesterIds: z.array(z.string()),
     createdAt: z.string(),
+    gameName: z.string(),
+    eventCount: z.number().int().nonnegative(),
+    feedbackCount: z.number().int().nonnegative(),
 });
 
 export const CreateSessionSchema = z.object({

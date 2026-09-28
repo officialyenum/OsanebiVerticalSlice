@@ -31,7 +31,7 @@ export const GetFeedbacksDocRoute = createRoute({
     path: '/feedbacks',
     tags: ['Feedbacks'],
     summary: 'List visible Feedbacks',
-    description: 'Lists Feedbacks owned by the current user.',
+    description: 'Studios see feedback for their sessions; playtesters see feedback they submitted.',
     security: authSecurity,
     responses: {
         200: {

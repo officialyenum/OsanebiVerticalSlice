@@ -99,6 +99,9 @@ export namespace SessionDto {
         notes: string | null;
         playtesterIds: string[];
         createdAt: Date | null;
+        gameName: string;
+        eventCount: number;
+        feedbackCount: number;
     }
 }
 
@@ -138,6 +141,7 @@ export namespace FeedbackDto {
         content: string;
         tags: FeedbackModel['tags'];
         createdAt: Date;
+        gameName?: string;
     }
 }
 

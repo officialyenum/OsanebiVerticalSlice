@@ -11,6 +11,9 @@ export class SessionEntity implements SessionModel {
     notes: string | null;
     playtesterIds: string[];
     createdAt: Date;
+    gameName: string;
+    eventCount: number;
+    feedbackCount: number;
 
     constructor(
         id: string,
@@ -20,7 +23,10 @@ export class SessionEntity implements SessionModel {
         endTime: Date | null = null,
         notes: string | null = null,
         playtesterIds: string[] = [],
-        createdAt: Date = new Date()
+        createdAt: Date = new Date(),
+        gameName: string = '',
+        eventCount: number = 0,
+        feedbackCount: number = 0,
     ) {
         this.id = id;
         this.gameId = gameId;
@@ -30,6 +36,9 @@ export class SessionEntity implements SessionModel {
         this.notes = notes;
         this.playtesterIds = playtesterIds;
         this.createdAt = createdAt;
+        this.gameName = gameName;
+        this.eventCount = eventCount;
+        this.feedbackCount = feedbackCount;
     }
 
     start(): void {
@@ -55,6 +64,9 @@ export class SessionEntity implements SessionModel {
             notes: this.notes,
             playtesterIds: this.playtesterIds,
             createdAt: this.createdAt,
+            gameName: this.gameName,
+            eventCount: this.eventCount,
+            feedbackCount: this.feedbackCount,
         };
     }
 }

@@ -3,6 +3,7 @@
 import { getApiBaseUrl, getAuthToken, setAuthToken } from "@/util/auth"
 import type { LoginRequest } from "@/lib/type/requests"
 import type { CurrentUserResponse, ErrorResponse, LoginResponse } from "@/lib/type/responses"
+import { redirect } from "vinext/shims/navigation-errors";
 
 export async function loginAction(
     data: LoginRequest,
@@ -94,7 +95,7 @@ export async function getCurrentUserAction(): Promise<{ ok: true; data: CurrentU
     if (!contentType?.includes("application/json")) {
         const text = await response.text()
         console.error("Auth API returned non-JSON", {
-            url: `${apiUrl.replace(/\/$/, "")}/auth/login`,
+            url: `${apiUrl.replace(/\/$/, "")}/auth/me`,
             status: response.status,
             contentType,
             body: text,

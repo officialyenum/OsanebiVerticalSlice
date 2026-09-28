@@ -1,7 +1,7 @@
 const STYLES: Record<string, string> = {
-  scheduled: "border-line text-muted",
-  live: "border-accent text-accent",
-  completed: "border-line text-faint",
+  scheduled: "border-amber-200 bg-amber-50 text-amber-800",
+  live: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  completed: "border-line bg-surface-alt text-muted",
 };
 
 export default function StatusBadge({ status }: { status: string }) {

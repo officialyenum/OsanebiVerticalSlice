@@ -12,13 +12,15 @@ export interface ISessionRepository {
     updateSession(data: SessionDto.Update): Promise<SessionEntity>;
 
     // Session Feedbacks
-    getFeedbacksBySessionId(sessionId: string): Promise<FeedbackEntity[]>;
+    getFeedbacksBySessionId(sessionId: string, userId: string): Promise<FeedbackEntity[]>;
+    getFeedbacksVisibleToUser(userId: string): Promise<FeedbackEntity[]>;
     findFeedbackById(feedbackId: string): Promise<FeedbackEntity>;
     createFeedback(data: FeedbackDto.Create): Promise<FeedbackEntity>;
     updateFeedback(data: FeedbackDto.Update): Promise<FeedbackEntity>;
 
     // Session Events
-    getEventsBySessionId(sessionId: string): Promise<EventEntity[]>;
+    getEventsBySessionId(sessionId: string, userId: string): Promise<EventEntity[]>;
+    getEventsVisibleToUser(userId: string): Promise<EventEntity[]>;
     findEventById(eventId: string): Promise<EventEntity>;
     createEvent(data: EventDto.Create): Promise<EventEntity>;
     updateEvent(data: EventDto.Update): Promise<EventEntity>;

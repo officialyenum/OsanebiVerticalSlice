@@ -13,8 +13,8 @@ export default function DashboardNav({ name, role,} : {
         { href: "/dashboard", label: "Overview" },
         { href: "/dashboard/games", label: "Games" },
         { href: "/dashboard/sessions", label: "Sessions" },
-        { href: "/dashboard/Feedbacks", label: "Feedbacks" },
-        { href: "/dashboard/Events", label: "Events" },
+        { href: "/dashboard/feedback", label: "Feedback" },
+        ...(role === "studio" ? [{ href: "/dashboard/events", label: "Events" }] : []),
         { href: "/dashboard/Tasks", label: "Tasks" },
     ];
 

@@ -2,14 +2,18 @@ import Link from "next/link";
 import { getCurrentUserAction } from "@/lib/actions/auth";
 import type { CurrentUserResponse, GameResponse } from "@/lib/type/responses";
 import { getGamesOwnedAction } from "@/lib/actions/game";
+import { getSessionsByGameAction, getSessionsOwnedAction } from "@/lib/actions/session";
 
 export default async function DashboardPage() {
     const resp = await getCurrentUserAction();
     if (!resp.ok) return null;
     const user: CurrentUserResponse = resp.data;
-    const gamesResponse = await getGamesOwnedAction(user.id);
-    const games: GameResponse[] = gamesResponse.ok ? gamesResponse.data ?? [] : [];
+    const gameResponse = await getGamesOwnedAction(user.id);
+    const sessionResponse = await getSessionsOwnedAction();
+    const games: GameResponse[] = gameResponse.ok ? gameResponse.data ?? [] : [];
+    const sessions: GameResponse[] = sessionResponse.ok ? sessionResponse.data ?? [] : [];
     console.log(games);
+    console.log(sessions);
 
     return (
         <div className="space-y-8">
@@ -27,7 +31,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="border-y border-line py-5">
                     <p className="label">sessions</p>
-                    <p className="mt-2 font-display text-3xl font-semibold text-ink">—</p>
+                    <p className="mt-2 font-display text-3xl font-semibold text-ink">{sessions.length}</p>
                     <Link href="/dashboard/sessions" className="mt-3 inline-block text-sm text-accent-dark hover:underline">View sessions</Link>
                 </div>
             </section>

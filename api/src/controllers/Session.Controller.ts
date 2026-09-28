@@ -53,7 +53,15 @@ export class SessionController {
         if (!userId) throw new UnauthorizedError('Authentication required');
         if (!sessionId) throw new UnauthorizedError('session ID required');
 
-        const feedbacks = await this.sessionService.getFeedbacksBySessionId(sessionId);
+        const feedbacks = await this.sessionService.getFeedbacksBySessionId(sessionId, userId);
+        return c.json({ data: feedbacks });
+    }
+
+    async listFeedbacksByUser(c: Context<HonoContext>): Promise<any> {
+        const userId = c.get('userId');
+        if (!userId) throw new UnauthorizedError('Authentication required');
+
+        const feedbacks = await this.sessionService.getFeedbacksVisibleToUser(userId);
         return c.json({ data: feedbacks });
     }
 
@@ -83,7 +91,15 @@ export class SessionController {
         if (!userId) throw new UnauthorizedError('Authentication required');
         if (!sessionId) throw new UnauthorizedError('session ID required');
 
-        const events = await this.sessionService.getEventsBySessionId(sessionId);
+        const events = await this.sessionService.getEventsBySessionId(sessionId, userId);
+        return c.json({ data: events });
+    }
+
+    async listEventsVisibleToUser(c: Context<HonoContext>): Promise<any> {
+        const userId = c.get('userId');
+        if (!userId) throw new UnauthorizedError('Authentication required');
+
+        const events = await this.sessionService.getEventsVisibleToUser(userId);
         return c.json({ data: events });
     }
 

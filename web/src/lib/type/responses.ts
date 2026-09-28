@@ -1,6 +1,7 @@
 import {
     User,
     Game,
+    Event as EventModel,
     Feedback,
     Studio,
     StudioMember,
@@ -57,17 +58,29 @@ export type StudioMemberResponseList = StudioMember[];
 export type GameResponse = Game;
 export type GameResponseList = Game[];
 
-export type SessionResponse = Session;
-export type SessionResponseList = Session[];
+export type SessionResponse = Omit<Session, "startTime" | "endTime" | "createdAt"> & {
+    startTime: string | null;
+    endTime: string | null;
+    createdAt: string;
+};
+export type SessionListItem = SessionResponse & {
+    gameName: string;
+    eventCount: number;
+    feedbackCount: number;
+};
+export type SessionResponseList = SessionListItem[];
 
 export type SessionPlaytesterResponse = SessionPlaytester;
 export type SessionPlaytesterResponseList = SessionPlaytester[];
 
-export type EventResponse = Event;
-export type EventResponseList = Event[];
+export type EventResponse = Omit<EventModel, "timestamp"> & { timestamp: string };
+export type EventResponseList = EventResponse[];
 
-export type FeedbackResponse = Feedback;
-export type FeedbackResponseList = Feedback[];
+export type FeedbackResponse = Omit<Feedback, "createdAt"> & {
+    createdAt: string;
+    gameName?: string;
+};
+export type FeedbackResponseList = FeedbackResponse[];
 
 export type ReportResponse = Report;
 export type ReportResponseList = Report[];
@@ -76,4 +89,4 @@ export type TaskResponse = Task;
 export type TaskResponseList = Task[];
 
 export type PublisherInsightResponse = PublisherInsight;
-export type PublisherInsightResponseList =  PublisherInsight[];
+export type PublisherInsightResponseList = PublisherInsight[];

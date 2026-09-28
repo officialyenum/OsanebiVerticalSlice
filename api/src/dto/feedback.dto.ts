@@ -20,6 +20,7 @@ export const FeedbackSchema = z.object({
     content: z.string().nullable(),
     tags: z.array(z.string()),
     createdAt: z.string(),
+    gameName: z.string().optional(),
 });
 
 export const CreateFeedbackSchema = z.object({

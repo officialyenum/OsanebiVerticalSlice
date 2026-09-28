@@ -7,7 +7,7 @@ import { KVNamespace } from '@cloudflare/workers-types';
 import { cacheDeleteByPrefix, cacheGet, cacheSet } from '@api/utils/cache';
 
 export class SessionService implements ISessionService {
-    private static readonly CACHE_PREFIX = 'sessions:';
+    private static readonly CACHE_PREFIX = 'sessions:v2:';
     private static readonly CACHE_TTL_SECONDS = 300;
 
     constructor(
@@ -71,9 +71,15 @@ export class SessionService implements ISessionService {
         return this.toResponse(session);
     }
 
-    async getFeedbacksBySessionId(sessionId: string): Promise<FeedbackDto.Response[]> {
+    async getFeedbacksBySessionId(sessionId: string, userId: string): Promise<FeedbackDto.Response[]> {
         if (!sessionId) throw new ValidationError('Session ID required');
-        return this.sessionRepository.getFeedbacksBySessionId(sessionId);
+        if (!userId) throw new ValidationError('User ID required');
+        return this.sessionRepository.getFeedbacksBySessionId(sessionId, userId);
+    }
+
+    async getFeedbacksVisibleToUser(userId: string): Promise<FeedbackDto.Response[]> {
+        if (!userId) throw new ValidationError('User ID required');
+        return this.sessionRepository.getFeedbacksVisibleToUser(userId);
     }
 
     async findFeedbackById(feedbackId: string): Promise<FeedbackDto.Response> {
@@ -99,15 +105,16 @@ export class SessionService implements ISessionService {
     }
 
 
-    async getEventsBySessionId(sessionId: string): Promise<EventDto.Response[]> {
-        const cacheKey = `${SessionService.CACHE_PREFIX}events:${sessionId}`;
-        const cached = await cacheGet<EventDto.Response[]>(this.cache, cacheKey, { type: 'json' });
-        if (cached) return cached;
+    async getEventsBySessionId(sessionId: string, userId: string): Promise<EventDto.Response[]> {
         if (!sessionId) throw new ValidationError('Session ID required');
+        if (!userId) throw new ValidationError('User ID required');
 
-        const events = await this.sessionRepository.getEventsBySessionId(sessionId);
-        await cacheSet(this.cache, cacheKey, events, { ttl: SessionService.CACHE_TTL_SECONDS });
-        return events;
+        return this.sessionRepository.getEventsBySessionId(sessionId, userId);
+    }
+
+    async getEventsVisibleToUser(userId: string): Promise<EventDto.Response[]> {
+        if (!userId) throw new ValidationError('User ID required');
+        return this.sessionRepository.getEventsVisibleToUser(userId);
     }
     async findEventById(eventId: string): Promise<EventDto.Response> {
         const cacheKey = `${SessionService.CACHE_PREFIX}event:${eventId}`;

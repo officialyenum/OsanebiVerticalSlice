@@ -7,7 +7,7 @@ import { SESSION_COOKIE } from "@/lib/constants";
 export function proxy(req: NextRequest) {
     const hasSession = req.cookies.has(SESSION_COOKIE);
     if (!hasSession) {
-        const loginUrl = new URL("/auth/login", req.url);
+        const loginUrl = new URL("/login", req.url);
         loginUrl.searchParams.set("next", req.nextUrl.pathname);
         return NextResponse.redirect(loginUrl);
     }

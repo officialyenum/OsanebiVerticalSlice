@@ -10,6 +10,7 @@ export class FeedbackEntity implements FeedbackModel {
     content: string;
     tags: FeedbackModel['tags'];
     createdAt: Date;
+    gameName?: string;
 
     constructor(
         id: string,
@@ -19,7 +20,8 @@ export class FeedbackEntity implements FeedbackModel {
         severity: FeedbackSeverity,
         content: string,
         tags: FeedbackModel['tags'] = null,
-        createdAt: Date = new Date()
+        createdAt: Date = new Date(),
+        gameName?: string,
     ) {
         this.id = id;
         this.sessionId = sessionId;
@@ -29,5 +31,6 @@ export class FeedbackEntity implements FeedbackModel {
         this.content = content;
         this.tags = tags;
         this.createdAt = createdAt;
+        this.gameName = gameName;
     }
 }

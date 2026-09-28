@@ -17,7 +17,7 @@ export async function getSessionFeedbacksAction(sessionId: string) {
             error: "Not Logged In",
         }
         
-        const response = await fetch(`${apiUrl.replace(/\/$/, "")}/sessions/{sessionId}/feedbacks`, {
+        const response = await fetch(`${apiUrl.replace(/\/$/, "")}/sessions/${sessionId}/feedbacks`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export async function getSessionFeedbacksAction(sessionId: string) {
         if (!contentType?.includes("application/json")) {
             const text = await response.text()
             console.error("Auth API returned non-JSON", {
-                url: `${apiUrl.replace(/\/$/, "")}/auth/login`,
+                url: `${apiUrl.replace(/\/$/, "")}/sessions/${sessionId}/feedbacks`,
                 status: response.status,
                 contentType,
                 body: text,

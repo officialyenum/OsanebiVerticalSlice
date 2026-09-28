@@ -1,7 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { CreateSessionSchema, SessionResponseSchema, SessionsResponseSchema } from '@api/dto/session.dto';
 import { ErrorSchema } from '@api/dto/error.dto';
-import { CreateFeedbackSchema, FeedbackListResponseSchema, FeedbackResponseSchema } from '@api/dto/feedback.dto';
 import { CreateEventSchema, EventListResponseSchema, EventResponseSchema } from '@api/dto/event.dto';
 
 const authSecurity = [{ bearerAuth: [] }];
@@ -33,12 +31,12 @@ export const GetEventsDocRoute = createRoute({
     path: '/events',
     tags: ['Events'],
     summary: 'List visible Events',
-    description: 'Lists Events owned by the current studio.',
+    description: 'Lists events from sessions owned by the authenticated studio.',
     security: authSecurity,
     responses: {
         200: {
             description: 'Events found',
-            content: { 'application/json': { schema: FeedbackListResponseSchema } },
+            content: { 'application/json': { schema: EventListResponseSchema } },
         },
         401: {
             description: 'Authentication required',
@@ -53,6 +51,7 @@ export const CreateEventDocRoute = createRoute({
     tags: ['Events'],
     summary: 'Create an Event',
     description: 'Creates an Event for a session.',
+    security: authSecurity,
     request: {
         body: {
             required: true,

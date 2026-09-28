@@ -29,7 +29,11 @@ export class PrismaSessionRepository implements ISessionRepository {
 
         const sessions = await this.prisma.session.findMany({
             where: visibility,
-            include: { playtesters: { select: { userId: true } } },
+            include: {
+                game: { select: { title: true } },
+                playtesters: { select: { userId: true } },
+                _count: { select: { events: true, feedback: true } },
+            },
             orderBy: { createdAt: 'desc' },
         });
 
@@ -51,7 +55,11 @@ export class PrismaSessionRepository implements ISessionRepository {
 
         const sessions = await this.prisma.session.findMany({
             where: visibility,
-            include: { playtesters: { select: { userId: true } } },
+            include: {
+                game: { select: { title: true } },
+                playtesters: { select: { userId: true } },
+                _count: { select: { events: true, feedback: true } },
+            },
             orderBy: { startTime: 'asc' },
         });
 
@@ -98,7 +106,11 @@ export class PrismaSessionRepository implements ISessionRepository {
                     create: users.map((user) => ({ userId: user.id })),
                 },
             },
-            include: { playtesters: { select: { userId: true } } },
+            include: {
+                game: { select: { title: true } },
+                playtesters: { select: { userId: true } },
+                _count: { select: { events: true, feedback: true } },
+            },
         });
 
         return this.toDomain(session);
@@ -107,7 +119,11 @@ export class PrismaSessionRepository implements ISessionRepository {
     async findSessionById(sessionId: string): Promise<SessionEntity> {
         const session = await this.prisma.session.findUnique({
             where: { id: sessionId },
-            include: { playtesters: { select: { userId: true } } },
+            include: {
+                game: { select: { title: true } },
+                playtesters: { select: { userId: true } },
+                _count: { select: { events: true, feedback: true } },
+            },
         });
         if (!session) throw new NotFoundError('Session not Found');
         return this.toDomain(session);
@@ -122,16 +138,45 @@ export class PrismaSessionRepository implements ISessionRepository {
                 startTime: updates.startTime ? new Date(updates.startTime) : undefined,
                 endTime: updates.endTime ? new Date(updates.endTime) : undefined,
             },
-            include: { playtesters: { select: { userId: true } } },
+            include: {
+                game: { select: { title: true } },
+                playtesters: { select: { userId: true } },
+                _count: { select: { events: true, feedback: true } },
+            },
         });
         return this.toDomain(session);
     }
 
 
 
-    async getFeedbacksBySessionId(sessionId: string): Promise<FeedbackEntity[]> {
+    async getFeedbacksBySessionId(sessionId: string, userId: string): Promise<FeedbackEntity[]> {
+        const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+        if (!user) return [];
+
+        const where: Prisma.FeedbackWhereInput = {
+            sessionId,
+            ...(user.role === UserRole.studio
+                ? { session: { game: { studio: { ownerUserId: userId } } } }
+                : { authorUserId: userId }),
+        };
         const feedbacks = await this.prisma.feedback.findMany({
-            where: { sessionId },
+            where,
+            include: { session: { select: { game: { select: { title: true } } } } },
+            orderBy: { createdAt: 'desc' },
+        });
+        return feedbacks.map((feedback) => this.feedbackToDomain(feedback));
+    }
+
+    async getFeedbacksVisibleToUser(userId: string): Promise<FeedbackEntity[]> {
+        const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+        if (!user) return [];
+
+        const where: Prisma.FeedbackWhereInput = user.role === UserRole.studio
+            ? { session: { game: { studio: { ownerUserId: userId } } } }
+            : { authorUserId: userId };
+        const feedbacks = await this.prisma.feedback.findMany({
+            where,
+            include: { session: { select: { game: { select: { title: true } } } } },
             orderBy: { createdAt: 'desc' },
         });
         return feedbacks.map((feedback) => this.feedbackToDomain(feedback));
@@ -164,12 +209,39 @@ export class PrismaSessionRepository implements ISessionRepository {
         return this.feedbackToDomain(feedback);
     }
 
-    async getEventsBySessionId(sessionId: string): Promise<EventEntity[]> {
+    async getEventsBySessionId(sessionId: string, userId: string): Promise<EventEntity[]> {
+        const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+        if (user?.role !== UserRole.studio) return [];
+
+        const session = await this.prisma.session.findFirst({
+            where: { id: sessionId, game: { studio: { ownerUserId: userId } } },
+            select: { id: true },
+        });
+        if (!session) return [];
+
         const events = await this.prisma.event.findMany({
             where: { sessionId },
             orderBy: { timestamp: 'asc' },
         });
 
+        return events.map((event) => this.eventToDomain(event));
+    }
+
+    async getEventsVisibleToUser(userId: string): Promise<EventEntity[]> {
+        const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+        if (user?.role !== UserRole.studio) return [];
+
+        const sessions = await this.prisma.session.findMany({
+            where: { game: { studio: { ownerUserId: userId } } },
+            select: { id: true },
+        });
+        const sessionIds = sessions.map((session) => session.id);
+        if (sessionIds.length === 0) return [];
+
+        const events = await this.prisma.event.findMany({
+            where: { sessionId: { in: sessionIds } },
+            orderBy: { timestamp: 'desc' },
+        });
         return events.map((event) => this.eventToDomain(event));
     }
     async findEventById(eventId: string): Promise<EventEntity> {
@@ -188,13 +260,15 @@ export class PrismaSessionRepository implements ISessionRepository {
 
         return this.eventToDomain(event);
     }
-    
+
     async updateEvent(data: EventDto.Update): Promise<EventEntity> {
         const { id, ...updates } = data;
-        const event = await this.prisma.event.update({ where: { id }, data: {
-            ...updates,
-            payload: updates.payload as Prisma.InputJsonValue,
-        } });
+        const event = await this.prisma.event.update({
+            where: { id }, data: {
+                ...updates,
+                payload: updates.payload as Prisma.InputJsonValue,
+            }
+        });
         return this.eventToDomain(event);
     }
 
@@ -208,6 +282,9 @@ export class PrismaSessionRepository implements ISessionRepository {
             raw.notes,
             raw.playtesters?.map((playtester: { userId: string }) => playtester.userId) ?? [],
             raw.createdAt,
+            raw.game?.title ?? '',
+            raw._count?.events ?? 0,
+            raw._count?.feedback ?? 0,
         );
     }
 
@@ -221,6 +298,7 @@ export class PrismaSessionRepository implements ISessionRepository {
             raw.content,
             raw.tags,
             raw.createdAt,
+            raw.session?.game?.title,
         );
     }
 
