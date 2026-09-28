@@ -27,7 +27,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -r --parallel --filter ./api --filter ./web run dev",
-    "build": "pnpm -r --parallel --filter ./api --filter ./web run build",
+    "build": "cd ./web && pnpm run build",
     "deploy": "pnpm -r --parallel --filter ./api --filter ./web run deploy",
     "prisma:generate": "pnpm --dir api run prisma:generate"
   },

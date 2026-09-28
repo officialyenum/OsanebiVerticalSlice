@@ -28,8 +28,8 @@
     "wrangler": "^4.138.0"
   },
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build",
+    "dev": "vite dev",
+    "build": "vite build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "deploy": "vinext-cloudflare deploy --config dist/server/wrangler.json",
     "preview": "npm run build && npm run start --",

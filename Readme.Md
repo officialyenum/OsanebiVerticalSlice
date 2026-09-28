@@ -28,6 +28,7 @@ From the repository root, install dependencies, generate the Prisma client, then
 
 ```sh
 pnpm install
+pnpm build
 pnpm prisma:generate
 pnpm dev
 ```
