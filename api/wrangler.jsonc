@@ -1,0 +1,44 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-04",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"vars": {
+		"ENVIRONMENT ": "development",
+		"DATABASE_URL": "file:./db.sqlite",
+		"JWT_SECRET": "aaf867604cd445dce48126f5d11780caa2f044a3d2485dd1d75ca238c8ce58a9",
+		"SEED_DB_PASSWORD": "password123"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "OSANEBI_KV",
+			"id": "5b94cb13e61d452b8ddfb13f96ed1714",
+			"remote": true
+		}
+	],
+	// "r2_buckets": [
+	//   {
+	//     "binding": "MY_BUCKET",
+	//     "bucket_name": "my-bucket"
+	//   }
+	// ],
+	"d1_databases": [
+		{
+			"binding": "OSANEBI_DB",
+			"database_name": "osanebi",
+			"database_id": "500c4964-124f-419f-86cc-c6a3f4a1f07e",
+			"migrations_dir": "./prisma/migrations",
+			"remote": true
+		},
+	]
+	// "ai": {
+	//   "binding": "AI"
+	// },
+	// "observability": {
+	//   "enabled": true,
+	//   "head_sampling_rate": 1
+	// }
+}
